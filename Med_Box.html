@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <title>The Secret Converter</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
+        <script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <style>
+           body{
+                background-color: #36aefe;
+            }
+            /* textarea{
+                width:80%;
+                height:100px;
+            } */
+            div{
+                width:60%;
+            }
+            button{
+                margin:auto;
+                width:150px;
+            }
+            a{
+                color:black;
+                font-size: 16px;
+                margin:15px;
+            }
+            div{
+                margin:auto;
+            }
+            .line{
+                width:70%;
+                height:2px;
+                background-color: #06283D;
+                margin-top: 20px;
+            }
+            p{
+                margin-top: 20px;
+                color:#DFF6FF;
+            }
+            button{
+                margin:5px;
+            }
+            h2{
+                color:#DFF6FF;
+                font-family: 'Comfortaa', cursive;
+                font-size: 25px;
+            }
+            .form-control{
+                width:80% !important;
+                height:100px !important;
+                margin:auto !important;
+            }
+            table{
+                border:#DFF6FF;
+            }
+            td{
+                padding:10px;
+                color:aliceblue;
+            }
+            .copyright a{
+    text-decoration: none;
+    color: aliceblue;
+}
+
+/* .copyright a:hover{
+    text-decoration: underline;
+    transition: text-decoration 2s;
+} */
+.copyright{
+    padding-left: 10px;
+    position:fixed;
+    bottom:-10px;
+    background-color: #06283D;
+    width:100%;
+}
+        </style>
+    </head>
+    <body>
+        <a href="mean.html">Click here</a><br>
+        <center>
+            <h2>Mean, Median</h2>
+            <textarea id="whyme" class="form-control" placeholder="Write all the numbers."></textarea>
+        <br><br><button onclick="basics()" class="btn btn-primary">FIND</button>
+        <hr>
+        <p id="whyhim"></p>
+        <br><hr><br>
+    </center>
+        <div id='whosdiv'></div>
+        <p class="copyright">All Copyrights &#169; Reserved 2022,<a href="mailto:noobe.bot2@gmail.com?subject = Feedback&body = Message">Pushkar Gupta</a></p>
+        <script>
+            function basics(){
+                ans = document.getElementById("whyhim");
+                med = 0;
+                q1 = 0;
+                q3 = 0;
+                average = 0;
+                numb = document.getElementById("whyme").value.toString().replace(" ","").split(",");
+                numb.sort(function(a, b){return a-b});
+                for(i=0;i<numb.length;i++){
+                    numb[i] = Number(numb[i]);
+                }
+                med = findmed(numb.length);
+                oddcheck = numb.length/2;
+                if((numb.length/2).toString().includes(".")==true){
+                    q1 = findmed((numb.length-1)/2);
+                    q3 = q3f((numb.length-1)/2,oddcheck);
+                }else{
+                    q1 = findmed(numb.length/2);
+                    q3 = q3f(numb.length/2,oddcheck);
+                }
+                for(i=0;i<numb.length;i++){
+                    average += numb[i];
+                }
+                average = average/numb.length;
+                iqr = q3-q1;
+                range = numb[numb.length-1]-numb[0];
+                ans.innerHTML = "Ascending Order = "+numb+"<br>Mediun = "+med+"<br>Q1 = "+q1+"<br>Q3 = "+q3+"<br>IQR = "+iqr
+                +"<br>Range = "+range+"<br>Length = "+numb.length+"<br>Average = "+average;
+                var trace1 = {
+  x: numb,
+  type: 'box',
+  name: 'Set 1'
+};
+
+var data = [trace1];
+
+var layout = {
+  title: 'Horizontal Box Plot'
+};
+
+Plotly.newPlot('whosdiv', data, layout);
+            }
+            function findmed(length){
+                medpos = (length+1)/2;
+                if(medpos.toString().includes(".")==true){
+                fm = Number(medpos.toString().split(".")[0]);
+                return((numb[fm]+numb[fm-1])/2)
+                }else{
+                return(numb[medpos-1]);
+                }
+            }
+            function q3f(length,div2){
+                medpos = (length+1)/2;
+                if(medpos.toString().includes(".")==true){
+                fm = Number(medpos.toString().split(".")[0]);
+                    if(div2.toString().includes(".")==true){
+                        return((numb[(fm+(div2+0.5))]+numb[(fm-1+(div2+0.5))])/2);
+                    }else{
+                        return((numb[(fm+(div2))]+numb[(fm-1+(div2))])/2);
+                    }
+                }else{
+                    if(div2.toString().includes(".")==true){
+                        return(numb[(medpos-1)+(div2+0.5)]);
+                    }else{
+                        return(numb[(medpos-1)+div2]);
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
